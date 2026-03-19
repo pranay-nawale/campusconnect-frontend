@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.card-glow:hover{
+  box-shadow: 0 0 30px rgba(168,85,247,0.6);
+}
