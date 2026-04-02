@@ -1,26 +1,3 @@
-// import { Link } from "react-router-dom";
-
-// const AdminSidebar = () => {
-//   return (
-//     <div className="w-64 bg-indigo-900 text-white p-5">
-
-//       <h2 className="text-xl font-bold mb-6">CampusConnect</h2>
-
-//       <ul className="space-y-4">
-//         <li><Link to="/admin/dashboard">Dashboard</Link></li>
-//         <li><Link to="/admin/users">Students</Link></li>
-//         <li><Link to="/admin/vendors">Vendors</Link></li>
-//         <li><Link to="/admin/colleges">Colleges</Link></li>
-//         <li><Link to="/admin/events">Events</Link></li>
-//         <li><Link to="/admin/settings">Settings</Link></li>
-//       </ul>
-
-//     </div>
-//   );
-// };
-
-// export default AdminSidebar;
-
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 
