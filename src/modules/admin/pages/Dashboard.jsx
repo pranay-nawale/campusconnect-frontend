@@ -3,10 +3,12 @@ import InfoCard from "../components/InfoCard";
 import ActionButton from "../components/ActionButton";
 import { useEffect, useState } from "react";
 import { getDashboardData } from "../services/dashboard";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
 
   const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   // ✅ Fetch data from backend
   useEffect(() => {
@@ -31,21 +33,25 @@ const Dashboard = () => {
           title="Total Colleges" 
           value={data?.totalColleges || 0} 
           gradient="linear-gradient(135deg,#3b82f6,#6366f1)" 
+          onClick={() => navigate("/admin/colleges")}
         />
         <StatCard 
           title="Total Vendors" 
           value={data?.totalVendors || 0} 
           gradient="linear-gradient(135deg,#f97316,#fb923c)" 
+          onClick={() => navigate("/admin/vendors")}
         />
         <StatCard 
           title="Total Students" 
           value={data?.totalStudents || 0} 
           gradient="linear-gradient(135deg,#22c55e,#34d399)" 
+          onClick={() => navigate("/admin/students")}
         />
         <StatCard 
           title="Total Events" 
           value={data?.totalEvents || 0} 
           gradient="linear-gradient(135deg,#8b5cf6,#a855f7)" 
+          onClick={() => navigate("/admin/events")}
         />
       </div>
 
@@ -87,10 +93,22 @@ const Dashboard = () => {
 
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row flex-wrap gap-4">
-        <ActionButton text="Manage Vendors" gradient="linear-gradient(135deg,#3b82f6,#6366f1)" />
-        <ActionButton text="Manage Colleges" gradient="linear-gradient(135deg,#f97316,#fb923c)" />
-        <ActionButton text="Manage Students" gradient="linear-gradient(135deg,#22c55e,#34d399)" />
-        <ActionButton text="View Requests" gradient="linear-gradient(135deg,#64748b,#94a3b8)" />
+        <ActionButton text="Manage Colleges" 
+                      gradient="linear-gradient(135deg,#3b82f6,#6366f1)" 
+                      onClick={() => navigate("/admin/colleges")}
+        />
+        <ActionButton text="Manage Vendors" 
+                      gradient="linear-gradient(135deg,#f97316,#fb923c)" 
+                      onClick={() => navigate("/admin/vendors")}
+        />
+        <ActionButton text="Manage Students" 
+                      onClick={() => navigate("/admin/students")}
+                      gradient="linear-gradient(135deg,#22c55e,#34d399)" 
+        />
+        <ActionButton text="View Requests"  
+                      onClick={() => navigate("/admin/events")}
+                      gradient="linear-gradient(135deg,#64748b,#94a3b8)" 
+        />
       </div>
 
     </div>

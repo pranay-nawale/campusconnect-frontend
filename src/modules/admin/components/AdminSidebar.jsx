@@ -56,9 +56,9 @@ const AdminSidebar = ({ closeSidebar }) => {
         </li>
 
         <li>
-          <Link to="/admin/settings" onClick={closeSidebar}>
-            Settings
-          </Link>
+          <button className="-full text-left px-4 py-2 rounded-md bg-indigo-700 transition-colors">
+            Logout
+          </button>
         </li>
 
       </ul>
