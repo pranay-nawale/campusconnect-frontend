@@ -1,130 +1,149 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { getCollegeProfile, getEventRequests } from "../services/collegeService";
 import { useNavigate } from "react-router-dom";
 
-
-
-function Dashboard() {
+export default function Dashboard() {
+  const [profile, setProfile] = useState(null);
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("events")) || [];
-    setEvents(stored);
+    loadData();
   }, []);
 
-const navigate = useNavigate();
+  const loadData = async () => {
+    try {
+      const profileRes = await getCollegeProfile();
+      setProfile(profileRes.data);
 
-const handleDelete = (id) => {
-  const confirmDelete = window.confirm("Are you sure?");
-  if (!confirmDelete) return;
+      try {
+        const eventRes = await getEventRequests();
+        setEvents(eventRes.data);
+      } catch (err) {
+        console.log("Event error:", err.response?.data);
+        setEvents([]);
+      }
 
-  const updated = events.filter((e) => e.id !== id);
+    } catch (err) {
+      console.log("Profile error:", err.response?.data);
+      navigate("/college/register");
+    }
+  };
 
-  localStorage.setItem("events", JSON.stringify(updated));
-  setEvents(updated);
-};
+  if (!profile) return <div className="section">Loading...</div>;
+
+  // ✅ Stats
+  const stats = {
+    total: events.length,
+    pending: events.filter(e => e.status === "PENDING").length,
+    planned: events.filter(e => e.status === "PLANNED").length,
+    confirmed: events.filter(e => e.status === "CONFIRMED").length,
+    rejected: events.filter(e => e.status === "REJECTED").length,
+  };
+
+  // ✅ Status color helper
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "CONFIRMED":
+        return "text-green-600";
+      case "PENDING":
+        return "text-yellow-600";
+      case "PLANNED":
+        return "text-blue-600";
+      case "REJECTED":
+        return "text-red-600";
+      default:
+        return "text-gray-500";
+    }
+  };
 
   return (
-    <div className="section">
+    <div className="section bg-soft">
+      <div className="section-inner">
 
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="section-title text-grad-primary">
-          Dashboard
-        </h2>
-        <p className="section-desc">
-          Manage your events and track their status
-        </p>
-      </div>
+        {/* HEADER */}
+        <div className="mb-6">
+          <h2 className="section-title text-grad-primary">
+            Welcome {profile?.name}
+          </h2>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-
-        <div className="card p-5 text-center">
-          <p className="text-sm text-gray-500">Total Events</p>
-          <h3 className="text-2xl font-bold">
-            {events.length}
-          </h3>
+          <span
+            className={`badge mt-2 ${
+              profile.verificationStatus === "APPROVED"
+                ? "bg-green-100 text-green-600"
+                : "bg-yellow-100 text-yellow-600"
+            }`}
+          >
+            {profile.verificationStatus}
+          </span>
         </div>
 
-        <div className="card p-5 text-center">
-          <p className="text-sm text-gray-500">Approved</p>
-          <h3 className="text-2xl font-bold text-green-500">
-            {events.filter(e => e.status === "APPROVED").length}
-          </h3>
+        {/* STATS */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+
+          <div className="card p-4 text-center">
+            <p className="text-lg font-bold">{stats.total}</p>
+            <p className="text-sm text-gray-500">Total</p>
+          </div>
+
+          <div className="card p-4 text-center">
+            <p className="text-lg font-bold">{stats.pending}</p>
+            <p className="text-sm text-gray-500">Pending</p>
+          </div>
+
+          <div className="card p-4 text-center">
+            <p className="text-lg font-bold">{stats.planned}</p>
+            <p className="text-sm text-gray-500">Planned</p>
+          </div>
+
+          <div className="card p-4 text-center">
+            <p className="text-lg font-bold">{stats.confirmed}</p>
+            <p className="text-sm text-gray-500">Confirmed</p>
+          </div>
+
         </div>
 
-        <div className="card p-5 text-center">
-          <p className="text-sm text-gray-500">Pending</p>
-          <h3 className="text-2xl font-bold text-yellow-500">
-            {events.filter(e => e.status === "PENDING").length}
-          </h3>
+        {/* ACTION */}
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Your Events</h3>
+
+          <button
+            onClick={() => navigate("/college/create-event")}
+            className="btn-primary"
+          >
+            + Create Event
+          </button>
         </div>
 
-      </div>
-
-      {/* Event List */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4">
-          Your Events
-        </h3>
-
+        {/* EVENTS LIST */}
         {events.length === 0 ? (
-          <p className="text-gray-500">No events created yet</p>
+          <div className="card p-6 text-center">
+            <p className="text-gray-500">No events yet</p>
+          </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 gap-4">
 
             {events.map((event) => (
-              <div key={event.id} className="card p-5">
+              <div key={event.id} className="card p-4">
 
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-semibold text-lg">
-                    {event.title}
-                  </h4>
+                <h4 className="font-semibold">{event.title}</h4>
+
+                <p className="text-sm text-gray-500">
+                  {event.description}
+                </p>
+
+                <div className="flex justify-between mt-3">
+
+                  <span className="text-xs text-gray-400">
+                    {event.category}
+                  </span>
 
                   <span
-                    className={`badge ${
-                      event.status === "APPROVED"
-                        ? "bg-green-100 text-green-600"
-                        : event.status === "PENDING"
-                        ? "bg-yellow-100 text-yellow-600"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                    className={`text-xs font-semibold ${getStatusColor(event.status)}`}
                   >
                     {event.status}
                   </span>
-                </div>
 
-                <p className="text-sm text-gray-500 mb-2">
-                  📅 {event.eventDate}
-                </p>
-
-                <p className="text-sm text-gray-500 mb-4">
-                  👥 {event.maxParticipants} Participants
-                </p>
-
-                <div className="flex gap-3">
-                <button
-                    onClick={() => navigate("/college/create-event", { state: event })}
-                    className="btn-outline"
-                    >
-                    Edit
-                </button>
-
-                <button
-                      onClick={() => navigate(`/college/event/${event.id}`)}
-                      className="btn-primary"
-                    >
-                      View
-                  </button>
-
-                    {event.status === "PENDING" && (
-                    <button
-                        onClick={() => handleDelete(event.id)}
-                        className="btn-primary bg-red-500"
-                    >
-                        Delete
-                    </button>
-                    )}
                 </div>
 
               </div>
@@ -134,9 +153,6 @@ const handleDelete = (id) => {
         )}
 
       </div>
-
     </div>
   );
 }
-
-export default Dashboard;

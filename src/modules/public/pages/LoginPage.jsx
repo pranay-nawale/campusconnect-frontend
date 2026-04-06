@@ -17,7 +17,7 @@ const LoginPage = () => {
   const redirectMap = {
     STUDENT: "/student",
     VENDOR: "/vendor/dashboard",
-    COLLEGE: "/college",
+    COLLEGE: "/college/dashboard",
     ADMIN: "/admin"
   };
 

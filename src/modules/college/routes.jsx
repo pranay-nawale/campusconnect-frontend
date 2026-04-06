@@ -1,20 +1,21 @@
 import { Route } from "react-router-dom";
 import CollegeLayout from "../../layouts/CollegeLayout";
-import Dashboard from "./pages/Dashboard"; 
-import CreateEvent from "./pages/CreateEvent"; 
+
+import Dashboard from "./pages/Dashboard";
 import CollegeProfile from "./pages/CollegeProfile";
+import Events from "./pages/Events";
+import CreateEvent from "./pages/CreateEvent";
 import EventDetails from "./pages/EventDetails";
-import MyEvents from "./pages/MyEvents";
-import PaymentPage from "./pages/PaymentPage";
 
 const CollegeRoutes = (
-  <Route element={<CollegeLayout />}>
-    <Route path="/college/dashboard" element={<Dashboard/>} />
-    <Route path="/college/create-event" element={<CreateEvent />} />
-    <Route path="/college/profile" element={<CollegeProfile />} />
-    <Route path="/college/event/:id" element={<EventDetails />} />
-    <Route path="/college/events" element={<MyEvents/>} />
-    <Route path="/college/payment/:id" element={<PaymentPage/>} />
+  <Route path="/college" element={<CollegeLayout />}>
+
+    <Route path="dashboard" element={<Dashboard />} />
+    <Route path="profile" element={<CollegeProfile />} />
+    <Route path="events" element={<Events />} />
+    <Route path="create-event" element={<CreateEvent />} />
+    <Route path="events/:id" element={<EventDetails />} />
+
   </Route>
 );
 
