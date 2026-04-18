@@ -213,6 +213,7 @@ export default function Navbar() {
     navigate(path || "/");
     setProfileOpen(false);
   };
+  
 
   // ✅ Logout
   const handleLogout = () => {
